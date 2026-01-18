@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For My Beautiful Queen</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary-pink: #ffafbd;
+            --deep-rose: #ffc3a0;
+            --accent-pink: #ff4d6d;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Animated Background */
+        .heart-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .heart {
+            position: absolute;
+            animation: float 5s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(110vh) scale(0.5); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 40px;
+            padding: 25px;
+            width: 85%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            z-index: 10;
+            position: relative;
+            border: 2px solid white;
+        }
+
+        h1 { color: #d63384; font-size: 1.5rem; margin: 5px 0; }
+
+        .shayari-box {
+            background: white;
+            padding: 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #444;
+            font-style: italic;
+            margin: 10px 0;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--accent-pink);
+            text-align: left;
+        }
+
+        .btn-love {
+            background: linear-gradient(to right, #ff4d6d, #ff758f);
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(255, 77, 109, 0.3);
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* Pulsing Heart Animation */
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .beating-heart {
+            display: inline-block;
+            color: #ff4d6d;
+            animation: heartbeat 1.2s infinite;
+            margin-right: 5px;
+        }
+
+        .timer-box {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px dashed #ffb3c1;
+            font-size: 0.85rem;
+            color: #d63384;
+            font-weight: 600;
+        }
+
+        .time-display {
+            font-size: 0.9rem;
+            margin-top: 3px;
+            letter-spacing: 0.5px;
+            color: #333;
+        }
+
+        .page { display: none; }
+        .active { display: block; animation: fadeInUp 0.6s ease; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pill-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .pill-item {
+            background: #fff0f3;
+            border: 1.5px solid #ffb3c1;
+            padding: 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #c9184a;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .detail-content { font-size: 1rem; color: #555; line-height: 1.6; margin: 15px 0; }
+        .back-btn { background: #eee; padding: 8px 15px; border-radius: 20px; border: none; font-size: 0.8rem; }
+    </style>
+</head>
+<body onclick="startMusic()">
+
+    <div class="heart-bg" id="heart-bg"></div>
+
+    <div class="card">
+        <div id="page1" class="page active">
+            <div style="font-size: 45px;">🙇‍♂️🌹</div>
+            <h1>I am Sorry, Jaan</h1>
+            <div class="shayari-box">
+                Udaash nazro me khwaab milenge<br>
+                Kabhi katein toh kabhi gulaab milenge 🌹<br>
+                Meri dil ki kitaab 📒 ko meri nazaro se padh kar toh dekho<br>
+                Kahi appki yaadein toh kahi app milenge ❤️
+            </div>
+            <button class="btn-love" onclick="goNext()">I Forgive You 🥰</button>
+        </div>
+
+        <div id="page2" class="page">
+            <div style="font-size: 45px;">💖✨</div>
+            <h1>Get Well Soon!</h1>
+            <div class="shayari-box">
+                Is naye saal per bhi appse kya kahein<br>
+                Dard hai par saha nahi jata<br>
+                Aur mohabbat ho gai hai appse iss qadar<br>
+                Ki bina mile appse raha nahi jata ❤️
+            </div>
+            <div class="pill-grid">
+                <div class="pill-item" onclick="openDetail('hug')">Hug Syrup 🫂</div>
+                <div class="pill-item" onclick="openDetail('kiss')">Kiss Tablet 💋</div>
+                <div class="pill-item" onclick="openDetail('soup')">Love Soup 🥣</div>
+                <div class="pill-item" onclick="openDetail('care')">Care Tonic 👑</div>
+            </div>
+        </div>
+
+        <div id="page3" class="page">
+            <div id="detail-icon" style="font-size: 55px;"></div>
+            <h1 id="detail-title"></h1>
+            <div class="detail-content" id="detail-text"></div>
+            <button class="back-btn" onclick="goBack()">Go Back ↩</button>
+        </div>
+
+        <div class="timer-box">
+            <div><span class="beating-heart">❤️</span> Together for:</div>
+            <div class="time-display">
+                <span id="days">0</span>d : <span id="hours">0</span>h : <span id="mins">0</span>m : <span id="secs">0</span>s
+            </div>
+        </div>
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="Jeene Laga Hoon Ramaiya Vastavaiya 320 Kbps.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const startDate = new Date(2023, 5, 4, 0, 0, 0); 
+
+        function updateTimer() {
+            const now = new Date();
+            const diff = now - startDate;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = days;
+            document.getElementById('hours').innerText = hours;
+            document.getElementById('mins').innerText = mins;
+            document.getElementById('secs').innerText = secs;
+        }
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        const details = {
+            hug: { title: "Hug Syrup", icon: "🫂", text: "A hug from me is a promise that you're never alone. Sending you a virtual squeeze that lasts forever. It's the best medicine for any pain! ❤️" },
+            kiss: { title: "Kiss Tablet", icon: "💋", text: "One tablet, twice a day! A thousand kisses to take away the fever. Each one carries my love and the wish for you to smile again soon. 😘" },
+            soup: { title: "Love Soup", icon: "🥣", text: "Warm, cozy, and made with 100% pure care. This soup is meant to heal your soul and remind you that I'm always here looking after you. 🍲✨" },
+            care: { title: "Care Tonic", icon: "👑", text: "Because you are the Queen! This tonic reminds you to rest, relax, and let me handle everything. Your health is my biggest priority. Get well, my Jaan! 👸" }
+        };
+
+        let musicStarted = false;
+        const music = document.getElementById('bgMusic');
+
+        function startMusic() {
+            if (!musicStarted) {
+                music.play().catch(e => console.log("Music play blocked"));
+                musicStarted = true;
+            }
+        }
+
+        function createHeart() {
+            const bg = document.getElementById('heart-bg');
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = ['❤️', '💖', '✨', '🌸'][Math.floor(Math.random()*4)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = (Math.random() * 15 + 10) + 'px';
+            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            bg.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+        setInterval(createHeart, 400);
+
+        function goNext() {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            document.getElementById('page1').classList.remove('active');
+            document.getElementById('page2').classList.add('active');
+            music.play();
+        }
+
+        function openDetail(key) {
+            const data = details[key];
+            document.getElementById('detail-icon').innerText = data.icon;
+            document.getElementById('detail-title').innerText = data.title;
+            document.getElementById('detail-text').innerText = data.text;
+            document.getElementById('page2').classList.remove('active');
+            document.getElementById('page3').classList.add('active');
+            confetti({ particleCount: 40, spread: 50 });
+        }
+
+        function goBack() {
+            document.getElementById('page3').classList.remove('active');
+            document.getElementById('page2').classList.add('active');
+        }
+    </script>
+</body>
+</html>
